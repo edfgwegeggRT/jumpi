@@ -351,4 +351,16 @@ export class GameEngine {
     // Initialize level elements
     this.initializeLevel(levelData);
   }
+  
+  // Method to handle touch input for mobile controls
+  public handleTouchInput(input: { left: boolean; right: boolean; jump: boolean }): void {
+    if (this.player) {
+      this.player.handleInput(input);
+    }
+  }
+  
+  // Method to check if player is grounded (for touch jumps)
+  public isPlayerGrounded(): boolean {
+    return this.player ? this.player.grounded : false;
+  }
 }
