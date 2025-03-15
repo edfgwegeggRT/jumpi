@@ -109,6 +109,11 @@ export default function Game({
         // Update game time
         const elapsedTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
         setGameTime(elapsedTime);
+        
+        // Auto-save game state
+        if (gameEngineRef.current.gameState) {
+          gameEngineRef.current.gameState.saveGameState();
+        }
 
         // Check game over condition
         if (lives <= 0 && !isGameOver) {

@@ -54,5 +54,35 @@ export class GameState {
     this.lives = 3;
     this.coins = 0;
     this.gameTime = 0;
+    this.saveGameState();
+  }
+
+  saveGameState(): void {
+    const gameState = {
+      score: this.score,
+      lives: this.lives,
+      coins: this.coins,
+      level: this.level,
+      gameTime: this.gameTime
+    };
+    localStorage.setItem('pixelJumperSave', JSON.stringify(gameState));
+  }
+
+  loadGameState(): boolean {
+    const savedState = localStorage.getItem('pixelJumperSave');
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      this.score = state.score;
+      this.lives = state.lives;
+      this.coins = state.coins;
+      this.level = state.level;
+      this.gameTime = state.gameTime;
+      return true;
+    }
+    return false;
+  }
+
+  constructor() {
+    this.loadGameState();
   }
 }

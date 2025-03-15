@@ -78,12 +78,6 @@ export default function MainMenu() {
         >
           CREDITS
         </button>
-        <button 
-          onClick={showLevelEditor}
-          className="bg-coin-gold hover:bg-yellow-400 text-dark-bg py-3 px-6 rounded-sm transition-colors duration-200 text-xl transform hover:scale-105 active:scale-95"
-        >
-          LEVEL EDITOR
-        </button>
       </div>
 
       <div className="absolute bottom-6 text-light-text text-xs text-center">
