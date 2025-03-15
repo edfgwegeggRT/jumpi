@@ -9,6 +9,7 @@ import GameOver from "@/pages/GameOver";
 import LevelComplete from "@/pages/LevelComplete";
 import Controls from "@/pages/Controls";
 import Credits from "@/pages/Credits";
+import LevelEditor from "@/pages/LevelEditor"; // Added LevelEditor import
 import { useState, useEffect } from "react";
 
 function Router() {
@@ -59,6 +60,7 @@ function Router() {
       </Route>
       <Route path="/controls" component={Controls} />
       <Route path="/credits" component={Credits} />
+      <Route path="/editor" component={LevelEditor} /> {/* Added LevelEditor route */}
       <Route component={NotFound} />
     </Switch>
   );
