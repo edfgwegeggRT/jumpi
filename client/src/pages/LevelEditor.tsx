@@ -41,6 +41,56 @@ export default function LevelEditor() {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw grid
+    ctx.strokeStyle = '#333333';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < canvas.width; x += 50) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+
+    // Draw objects
+    objects.forEach(obj => {
+      switch (obj.type) {
+        case 'platform':
+          ctx.fillStyle = '#4CAF50';
+          ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+          break;
+        case 'coin':
+          ctx.fillStyle = '#FFD700';
+          ctx.beginPath();
+          ctx.arc(obj.x + 10, obj.y + 10, 10, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 'enemy':
+          ctx.fillStyle = '#FF4444';
+          ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+          break;
+        case 'powerup':
+          ctx.fillStyle = '#00BCD4';
+          ctx.beginPath();
+          ctx.arc(obj.x + 12, obj.y + 12, 12, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+      }
+    });
+
+    // Draw preview for selected tool
+    const mousePos = { x: 0, y: 0 };
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mousePos.x = Math.round((e.clientX - rect.left) / 50) * 50;
+      mousePos.y = Math.round((e.clientY - rect.top) / 50) * 50;
+    });
 
     objects.forEach(obj => {
       ctx.fillStyle = {
@@ -79,14 +129,14 @@ export default function LevelEditor() {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl font-bold mb-4">Level Editor</h1>
-      <div className="mb-4 space-x-4">
+    <div className="flex flex-col items-center p-4 bg-dark-bg min-h-screen text-light-text">
+      <h1 className="text-4xl font-press-start mb-8 text-character-red">Level Editor</h1>
+      <div className="mb-6 space-x-4 bg-platform-green p-4 rounded-lg">
         {['platform', 'coin', 'enemy', 'powerup'].map(tool => (
           <button
             key={tool}
             onClick={() => setSelectedTool(tool as any)}
-            className={`px-4 py-2 rounded ${selectedTool === tool ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded-sm font-press-start text-sm ${selectedTool === tool ? 'bg-character-red text-light-text' : 'bg-coin-gold text-dark-bg'} transition-colors duration-200 transform hover:scale-105 active:scale-95`}
           >
             {tool.charAt(0).toUpperCase() + tool.slice(1)}
           </button>
