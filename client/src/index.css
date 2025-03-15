@@ -52,6 +52,4 @@
   body {
     @apply min-h-screen font-sans antialiased bg-background text-foreground;
   }
-    @apply min-h-screen font-sans antialiased bg-background text-foreground;
-  }
 }
