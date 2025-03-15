@@ -1,0 +1,10 @@
+# netlify.toml
+[build]
+  command = "cd client && npm run build"
+  publish = "client/dist"
+
+# Handle SPA routing - redirect all paths to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
