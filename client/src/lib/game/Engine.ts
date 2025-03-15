@@ -183,7 +183,12 @@ export class GameEngine {
     this.player.grounded = this.collisionDetection.checkGrounded(this.player, this.platforms);
     
     // Update player with input and physics
-    this.player.update(deltaTime, this.input);
+    const inputState = {
+      left: this.input.left,
+      right: this.input.right,
+      jump: this.input.jump
+    };
+    this.player.update(deltaTime, inputState);
     this.physics.applyPhysics(this.player, deltaTime);
     
     // Check collisions with platforms
