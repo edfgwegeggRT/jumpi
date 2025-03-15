@@ -112,6 +112,15 @@ export class GameEngine {
     this.enemies = [];
     this.powerUps = [];
     
+    // Create ground platform (spans entire level width)
+    this.platforms.push(new Platform({
+      x: 0,
+      y: this.level.height - 48,
+      width: this.level.width,
+      height: 48,
+      color: '#2ed573'
+    }));
+    
     // Create platforms
     levelData.platforms.forEach(platformData => {
       this.platforms.push(new Platform({
@@ -159,6 +168,9 @@ export class GameEngine {
   }
   
   public update(deltaTime: number): void {
+    // Reset grounded state
+    this.player.grounded = false;
+    
     // Update player based on input
     const input = this.input.getInput();
     this.player.handleInput(input);
@@ -168,6 +180,9 @@ export class GameEngine {
     
     // Update player position
     this.player.update(deltaTime);
+    
+    // Check if the player is on the ground using the foot sensor
+    this.player.grounded = this.collisionDetection.checkGrounded(this.player, this.platforms);
     
     // Check collisions with platforms
     this.platforms.forEach(platform => {
@@ -267,9 +282,7 @@ export class GameEngine {
     this.drawCloud(this.cameraX + 100, this.cameraY + 80, 60, 30);
     this.drawCloud(this.cameraX + 300, this.cameraY + 60, 80, 40);
     
-    // Draw ground
-    this.ctx.fillStyle = '#2ed573';
-    this.ctx.fillRect(0, this.level.height - 48, this.level.width, 48);
+    // We don't need to draw the ground here as it's already added as a platform
     
     // Draw platforms
     this.platforms.forEach(platform => platform.render(this.ctx));
