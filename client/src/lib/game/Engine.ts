@@ -266,15 +266,22 @@ export class GameEngine {
     // Apply camera transform
     this.ctx.translate(-this.cameraX, -this.cameraY);
     
-    // Draw sky background
-    this.ctx.fillStyle = '#5352ed';
+    // Draw gradient sky background
+    const gradient = this.ctx.createLinearGradient(this.cameraX, this.cameraY, this.cameraX, this.cameraY + this.height);
+    gradient.addColorStop(0, '#2980b9');
+    gradient.addColorStop(1, '#6dd5fa');
+    this.ctx.fillStyle = gradient;
     this.ctx.fillRect(this.cameraX, this.cameraY, this.width, this.height);
     
-    // Draw sun
+    // Draw sun with glow effect
+    this.ctx.save();
     this.ctx.fillStyle = '#ffa502';
+    this.ctx.shadowColor = '#ff6b6b';
+    this.ctx.shadowBlur = 20;
     this.ctx.beginPath();
-    this.ctx.arc(this.cameraX + this.width - 50, this.cameraY + 50, 30, 0, Math.PI * 2);
+    this.ctx.arc(this.cameraX + this.width - 50, this.cameraY + 50, 35, 0, Math.PI * 2);
     this.ctx.fill();
+    this.ctx.restore();
     
     // Draw clouds
     this.ctx.fillStyle = '#f1f2f6';

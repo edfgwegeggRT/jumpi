@@ -11,19 +11,27 @@ export default function LevelEditor() {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = Math.round((e.clientX - rect.left) / 50) * 50;
+    const y = Math.round((e.clientY - rect.top) / 50) * 50;
 
     const newObject = {
       type: selectedTool,
       x,
       y,
       ...(selectedTool === 'platform' && { width: 100, height: 30 }),
-      ...(selectedTool === 'enemy' && { speed: 50, patrolDistance: 100 }),
-      ...(selectedTool === 'powerup' && { type: 'speed' })
+      ...(selectedTool === 'coin' && { width: 20, height: 20 }),
+      ...(selectedTool === 'enemy' && { width: 32, height: 32, speed: 50, patrolDistance: 100 }),
+      ...(selectedTool === 'powerup' && { width: 24, height: 24, type: 'speed' })
     };
 
     setObjects([...objects, newObject]);
+
+    // Visual feedback
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.fillRect(x - 5, y - 5, 10, 10);
+    }
   };
 
   useEffect(() => {

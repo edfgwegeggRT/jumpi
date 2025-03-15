@@ -319,7 +319,7 @@ export class Level {
         { x: 1575, y: 300, type: 'speed' },
         { x: 2175, y: 250, type: 'jump' }
       ],
-      goal: { x: 2300, y: 360, width: 40, height: 150 }
+      goal: { x: 2300, y: 360, width: 60, height: 200 }
     },
     
     // Level 7: Maze-like level
