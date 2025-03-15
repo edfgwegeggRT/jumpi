@@ -504,6 +504,38 @@ export class Level {
       goal: { x: 2300, y: 460, width: 40, height: 150 }
     },
     
+    // Level 11: Boss Battle Arena
+    11: {
+      playerStart: { x: 50, y: 500 },
+      platforms: [
+        // Main arena floor
+        { x: 0, y: 530, width: 2500, height: 30 },
+        
+        // Battle platforms
+        { x: 300, y: 400, width: 200, height: 30 },
+        { x: 700, y: 400, width: 200, height: 30 },
+        { x: 1100, y: 400, width: 200, height: 30 },
+        { x: 1500, y: 400, width: 200, height: 30 },
+        { x: 1900, y: 400, width: 200, height: 30 }
+      ],
+      coins: [
+        { x: 400, y: 350 },
+        { x: 800, y: 350 },
+        { x: 1200, y: 350 },
+        { x: 1600, y: 350 },
+        { x: 2000, y: 350 }
+      ],
+      enemies: [
+        // Boss enemy with larger size and slower but wider patrol
+        { x: 1200, y: 460, speed: 40, patrolDistance: 800, width: 64, height: 64 }
+      ],
+      powerUps: [
+        { x: 300, y: 350, type: 'speed' },
+        { x: 2000, y: 350, type: 'jump' }
+      ],
+      goal: { x: 2300, y: 460, width: 40, height: 150 }
+    },
+    
     // Level 10: Super challenge
     10: {
       playerStart: { x: 50, y: 500 },
