@@ -172,14 +172,18 @@ export class GameEngine {
   }
   
   public update(deltaTime: number): void {
-    // Get input first
-    const input = this.input.getInput();
+    // Get input state
+    const input = {
+      left: this.input.left,
+      right: this.input.right,
+      jump: this.input.jump
+    };
     
     // Check if the player is on the ground using the foot sensor
     this.player.grounded = this.collisionDetection.checkGrounded(this.player, this.platforms);
     
-    // Handle input (including jump) after ground check but before physics
-    this.player.handleInput(input);
+    // Update player with input
+    this.player.update(deltaTime, this.input);
     
     // Apply physics to player (gravity, etc.)
     this.physics.applyPhysics(this.player, deltaTime);
