@@ -20,7 +20,14 @@ export class CollisionDetection {
     };
     
     // Check if the foot sensor collides with any platform
-    return platforms.some(platform => this.checkCollision(footSensor, platform));
+    const isGrounded = platforms.some(platform => this.checkCollision(footSensor, platform));
+    
+    // Debug logging (remove in production)
+    if (isGrounded !== player.grounded) {
+      console.log('Grounded state changed:', isGrounded);
+    }
+    
+    return isGrounded;
   }
   
   resolveCollision(player: any, platform: any): void {

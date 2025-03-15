@@ -6,28 +6,22 @@ export class Physics {
   private friction: number = 0.8;
   
   applyPhysics(player: Player, deltaTime: number): void {
-    // Apply gravity
-    player.vy += this.gravity * deltaTime;
-    
-    // Limit falling speed to terminal velocity
-    if (player.vy > this.terminalVelocity) {
-      player.vy = this.terminalVelocity;
-    }
-    
-    // Apply friction when on ground
-    if (player.grounded) {
-      player.vx *= this.friction;
+    // Apply gravity if not on ground
+    if (!player.grounded) {
+      player.vy += this.gravity * deltaTime;
       
-      // Reset vertical velocity when on ground
-      player.vy = 0;
+      // Limit falling speed to terminal velocity
+      if (player.vy > this.terminalVelocity) {
+        player.vy = this.terminalVelocity;
+      }
+    } else {
+      // Apply friction when on ground
+      player.vx *= this.friction;
       
       // If velocity is very small, stop completely
       if (Math.abs(player.vx) < 5) {
         player.vx = 0;
       }
     }
-    
-    // Reset grounded state (will be set true again if collision detected)
-    player.grounded = false;
   }
 }

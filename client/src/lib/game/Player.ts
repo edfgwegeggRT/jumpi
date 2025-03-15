@@ -183,6 +183,12 @@ export class Player {
     if (input.jump && this.grounded) {
       this.vy = -this.jumpForce;
       this.grounded = false;
+      // Play jump sound
+      const audioManager = (window as any).audioManager;
+      if (audioManager) {
+        audioManager.playSound('jump');
+      }
+      console.log('Jump triggered', this.jumpForce);
     }
   }
   

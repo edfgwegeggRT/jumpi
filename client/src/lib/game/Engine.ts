@@ -168,11 +168,13 @@ export class GameEngine {
   }
   
   public update(deltaTime: number): void {
-    // Reset grounded state
-    this.player.grounded = false;
-    
-    // Update player based on input
+    // Get input first
     const input = this.input.getInput();
+    
+    // Check if the player is on the ground using the foot sensor
+    this.player.grounded = this.collisionDetection.checkGrounded(this.player, this.platforms);
+    
+    // Handle input (including jump) after ground check but before physics
     this.player.handleInput(input);
     
     // Apply physics to player (gravity, etc.)
@@ -180,9 +182,6 @@ export class GameEngine {
     
     // Update player position
     this.player.update(deltaTime);
-    
-    // Check if the player is on the ground using the foot sensor
-    this.player.grounded = this.collisionDetection.checkGrounded(this.player, this.platforms);
     
     // Check collisions with platforms
     this.platforms.forEach(platform => {

@@ -149,3 +149,6 @@ class AudioManager {
 
 // Export a singleton instance
 export const audioManager = new AudioManager();
+
+// Make the audio manager globally accessible for debugging
+(window as any).audioManager = audioManager;
