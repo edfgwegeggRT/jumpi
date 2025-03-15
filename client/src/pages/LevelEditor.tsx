@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -10,11 +9,11 @@ export default function LevelEditor() {
   const addObject = (e: React.MouseEvent) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const newObject = {
       type: selectedTool,
       x,
@@ -23,7 +22,7 @@ export default function LevelEditor() {
       ...(selectedTool === 'enemy' && { speed: 50, patrolDistance: 100 }),
       ...(selectedTool === 'powerup' && { type: 'speed' })
     };
-    
+
     setObjects([...objects, newObject]);
   };
 
@@ -34,7 +33,7 @@ export default function LevelEditor() {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     objects.forEach(obj => {
       ctx.fillStyle = {
         platform: '#555',
@@ -42,7 +41,7 @@ export default function LevelEditor() {
         enemy: '#FF0000',
         powerup: '#00FF00'
       }[obj.type] || '#000';
-      
+
       if (obj.type === 'platform') {
         ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
       } else {
@@ -62,7 +61,7 @@ export default function LevelEditor() {
       powerUps: objects.filter(obj => obj.type === 'powerup'),
       goal: { x: 2200, y: 410, width: 40, height: 150 }
     };
-    
+
     const blob = new Blob([JSON.stringify(levelData)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
