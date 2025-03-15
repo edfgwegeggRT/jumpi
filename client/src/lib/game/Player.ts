@@ -194,6 +194,8 @@ export class Player {
     
     // Expression
     const mouthY = this.y + this.height * 0.5;
+    const mouthWidth = this.width * 0.5;
+    const mouthHeight = this.height * 0.1;
     
     if (this.state === PlayerState.JUMPING || this.state === PlayerState.FALLING) {
       // Surprised O mouth when jumping/falling
