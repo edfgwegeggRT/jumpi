@@ -3,8 +3,10 @@ import { useLocation } from 'wouter';
 import GameCanvas from '@/components/GameCanvas';
 import GameUI from '@/components/GameUI';
 import PauseMenu from '@/components/PauseMenu';
+import TouchControls from '@/components/TouchControls';
 import { GameEngine } from '@/lib/game/Engine';
 import { audioManager } from '@/lib/game/Audio';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface GameProps {
   score: number;
@@ -32,7 +34,9 @@ export default function Game({
   const [gameTime, setGameTime] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
   const [levelCompleted, setLevelCompleted] = useState(false);
+  const [touchInputs, setTouchInputs] = useState({ left: false, right: false, jump: false });
   
+  const isMobile = useIsMobile();
   const gameEngineRef = useRef<GameEngine | null>(null);
   const gameLoopRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
@@ -48,16 +52,16 @@ export default function Game({
     const createGameEngine = () => {
       gameEngineRef.current = new GameEngine(canvas, {
         onCoinCollect: (value: number) => {
-          setCoins(prevCoins => prevCoins + 1);
-          setScore(prevScore => prevScore + value);
+          setCoins((prevCoins: number) => prevCoins + 1);
+          setScore((prevScore: number) => prevScore + value);
           audioManager.playSound('coin');
         },
         onEnemyHit: () => {
-          setLives(prevLives => prevLives - 1);
+          setLives((prevLives: number) => prevLives - 1);
           audioManager.playSound('damage');
         },
         onPowerupCollect: () => {
-          setScore(prevScore => prevScore + 50);
+          setScore((prevScore: number) => prevScore + 50);
           audioManager.playSound('powerup');
         },
         onLevelComplete: () => {
@@ -183,6 +187,42 @@ export default function Game({
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  // Touch control handlers
+  const handleTouchLeft = () => {
+    if (gameEngineRef.current) {
+      setTouchInputs(prev => ({ ...prev, left: true, right: false }));
+      const input = { left: true, right: false, jump: touchInputs.jump };
+      gameEngineRef.current.player.handleInput(input);
+    }
+  };
+
+  const handleTouchRight = () => {
+    if (gameEngineRef.current) {
+      setTouchInputs(prev => ({ ...prev, left: false, right: true }));
+      const input = { left: false, right: true, jump: touchInputs.jump };
+      gameEngineRef.current.player.handleInput(input);
+    }
+  };
+
+  const handleTouchJump = () => {
+    if (gameEngineRef.current && gameEngineRef.current.player.grounded) {
+      setTouchInputs(prev => ({ ...prev, jump: true }));
+      const input = { left: touchInputs.left, right: touchInputs.right, jump: true };
+      gameEngineRef.current.player.handleInput(input);
+      audioManager.playSound('jump');
+      
+      // Reset jump after a short delay
+      setTimeout(() => {
+        setTouchInputs(prev => ({ ...prev, jump: false }));
+      }, 300);
+    }
+  };
+
+  const handleTouchPause = () => {
+    setIsPaused(prev => !prev);
+    audioManager.playSound('select');
+  };
+
   return (
     <div className="w-full h-screen flex justify-center items-center bg-dark-bg relative">
       <div className="w-full max-w-6xl aspect-video relative overflow-hidden border-4 border-light-text">
@@ -194,6 +234,15 @@ export default function Game({
             onResume={resumeGame} 
             onRestart={restartLevel} 
             onMainMenu={returnToMenu} 
+          />
+        )}
+        
+        {isMobile && !isPaused && (
+          <TouchControls
+            onMoveLeft={handleTouchLeft}
+            onMoveRight={handleTouchRight}
+            onJump={handleTouchJump}
+            onPause={handleTouchPause}
           />
         )}
       </div>
