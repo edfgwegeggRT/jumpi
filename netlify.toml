@@ -1,6 +1,6 @@
 # netlify.toml
 [build]
-  command = "cd client && npm install && npm run build"
+  command = "./netlify.sh"
   publish = "client/dist"
 
 # Handle SPA routing - redirect all paths to index.html

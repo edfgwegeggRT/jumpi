@@ -38,39 +38,57 @@ export default function Game({
   const lastTimeRef = useRef<number>(0);
   const startTimeRef = useRef<number>(Date.now());
 
+  // Setup game engine and event handlers
   useEffect(() => {
     // Initialize game engine
     const canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
     if (!canvas) return;
     
-    // Create game engine instance
-    gameEngineRef.current = new GameEngine(canvas, {
-      onCoinCollect: (value: number) => {
-        setCoins((prev: number) => prev + 1);
-        setScore((prev: number) => prev + value);
-        audioManager.playSound('coin');
-      },
-      onEnemyHit: () => {
-        setLives((prev: number) => prev - 1);
-        audioManager.playSound('damage');
-      },
-      onPowerupCollect: () => {
-        setScore((prev: number) => prev + 50);
-        audioManager.playSound('powerup');
-      },
-      onLevelComplete: () => {
-        setLevelCompleted(true);
-        const completionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
-        setCompletionTime(completionTime);
-        audioManager.playSound('levelComplete');
-      }
-    });
-    
-    // Load the current level
-    if (gameEngineRef.current) {
+    // Create game engine instance with callbacks
+    const createGameEngine = () => {
+      gameEngineRef.current = new GameEngine(canvas, {
+        onCoinCollect: (value: number) => {
+          setCoins(prevCoins => prevCoins + 1);
+          setScore(prevScore => prevScore + value);
+          audioManager.playSound('coin');
+        },
+        onEnemyHit: () => {
+          setLives(prevLives => prevLives - 1);
+          audioManager.playSound('damage');
+        },
+        onPowerupCollect: () => {
+          setScore(prevScore => prevScore + 50);
+          audioManager.playSound('powerup');
+        },
+        onLevelComplete: () => {
+          setLevelCompleted(true);
+          const completionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
+          setCompletionTime(completionTime);
+          audioManager.playSound('levelComplete');
+        }
+      });
+      
+      // Load the current level
       gameEngineRef.current.loadLevel(level);
-    }
+    };
     
+    createGameEngine();
+    
+    // Play background music on mount
+    audioManager.playBackgroundMusic();
+    
+    // Clean up on unmount
+    return () => {
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+        gameLoopRef.current = null;
+      }
+      audioManager.stopBackgroundMusic();
+    };
+  }, [level, setCoins, setScore, setLives, setCompletionTime]);
+  
+  // Setup game loop
+  useEffect(() => {
     // Start game loop
     const gameLoop = (currentTime: number) => {
       if (lastTimeRef.current === 0) {
@@ -99,7 +117,16 @@ export default function Game({
     
     gameLoopRef.current = requestAnimationFrame(gameLoop);
     
-    // Set up event listeners for pausing
+    return () => {
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+        gameLoopRef.current = null;
+      }
+    };
+  }, [isPaused, lives, isGameOver]);
+  
+  // Setup pause key handler
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') {
         setIsPaused(prev => !prev);
@@ -108,18 +135,10 @@ export default function Game({
     
     window.addEventListener('keydown', handleKeyDown);
     
-    // Play background music
-    audioManager.playBackgroundMusic();
-    
     return () => {
-      // Clean up
-      if (gameLoopRef.current) {
-        cancelAnimationFrame(gameLoopRef.current);
-      }
       window.removeEventListener('keydown', handleKeyDown);
-      audioManager.stopBackgroundMusic();
     };
-  }, [isPaused, lives, level]);
+  }, []);
 
   // Handle game over
   useEffect(() => {
