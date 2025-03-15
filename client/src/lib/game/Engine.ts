@@ -182,14 +182,9 @@ export class GameEngine {
     // Check if the player is on the ground using the foot sensor
     this.player.grounded = this.collisionDetection.checkGrounded(this.player, this.platforms);
     
-    // Update player with input
+    // Update player with input and physics
     this.player.update(deltaTime, this.input);
-    
-    // Apply physics to player (gravity, etc.)
     this.physics.applyPhysics(this.player, deltaTime);
-    
-    // Update player position
-    this.player.update(deltaTime);
     
     // Check collisions with platforms
     this.platforms.forEach(platform => {
