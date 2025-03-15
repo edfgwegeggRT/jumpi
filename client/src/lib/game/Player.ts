@@ -59,7 +59,24 @@ export class Player {
     this.color = options.color;
   }
   
-  update(deltaTime: number): void {
+  update(deltaTime: number, input: Input): void {
+    // Handle horizontal movement
+    if (input.left) {
+      this.vx = -this.speed;
+      this.direction = -1;
+    } else if (input.right) {
+      this.vx = this.speed;
+      this.direction = 1;
+    } else {
+      this.vx = 0;
+    }
+
+    // Handle jumping
+    if (input.jump && this.grounded) {
+      this.vy = -this.jumpForce;
+      this.grounded = false;
+    }
+
     // Update position based on velocity
     this.x += this.vx * deltaTime;
     this.y += this.vy * deltaTime;

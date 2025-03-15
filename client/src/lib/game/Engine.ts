@@ -57,6 +57,10 @@ export class GameEngine {
     // Initialize input handler
     this.input = new Input();
     
+    // Start game loop
+    this.update = this.update.bind(this);
+    requestAnimationFrame(this.update);
+    
     // Initialize physics
     this.physics = new Physics();
     
