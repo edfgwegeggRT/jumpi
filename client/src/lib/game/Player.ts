@@ -29,8 +29,8 @@ export class Player {
   // Physics properties
   vx: number = 0;
   vy: number = 0;
-  speed: number = 200;
-  jumpForce: number = 400;
+  speed: number = 220;
+  jumpForce: number = 550; // Increased jump height
   grounded: boolean = false;
   
   // Animation state
@@ -87,8 +87,8 @@ export class Player {
         this.hasSpeedBoost = false;
         this.hasJumpBoost = false;
         this.powerUpTimer = 0;
-        this.speed = 200; // Reset to default speed
-        this.jumpForce = 400; // Reset to default jump force
+        this.speed = 220; // Reset to default speed
+        this.jumpForce = 550; // Reset to default jump force
       }
     }
     
@@ -217,7 +217,7 @@ export class Player {
         break;
       case 'jump':
         this.hasJumpBoost = true;
-        this.jumpForce = 550; // Boosted jump
+        this.jumpForce = 700; // Greatly boosted jump
         break;
     }
     

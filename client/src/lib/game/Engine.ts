@@ -327,13 +327,28 @@ export class GameEngine {
   }
   
   public resetLevel(): void {
-    // Get current level data
-    const levelData = this.level.getLevel(1);
+    // Get current level from game state
+    const currentLevel = this.gameState.getLevel();
+    const levelData = this.level.getLevel(currentLevel);
     
     // Reset player position
     this.player.reset(levelData.playerStart.x, levelData.playerStart.y);
     
     // Reinitialize level elements
+    this.initializeLevel(levelData);
+  }
+  
+  public loadLevel(levelNumber: number): void {
+    // Set the level in the game state
+    this.gameState.setLevel(levelNumber);
+    
+    // Get the level data
+    const levelData = this.level.getLevel(levelNumber);
+    
+    // Reset player position
+    this.player.reset(levelData.playerStart.x, levelData.playerStart.y);
+    
+    // Initialize level elements
     this.initializeLevel(levelData);
   }
 }

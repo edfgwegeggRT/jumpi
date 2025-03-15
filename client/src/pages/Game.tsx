@@ -45,17 +45,17 @@ export default function Game({
     
     // Create game engine instance
     gameEngineRef.current = new GameEngine(canvas, {
-      onCoinCollect: (value) => {
-        setCoins(prev => prev + 1);
-        setScore(prev => prev + value);
+      onCoinCollect: (value: number) => {
+        setCoins((prev: number) => prev + 1);
+        setScore((prev: number) => prev + value);
         audioManager.playSound('coin');
       },
       onEnemyHit: () => {
-        setLives(prev => prev - 1);
+        setLives((prev: number) => prev - 1);
         audioManager.playSound('damage');
       },
       onPowerupCollect: () => {
-        setScore(prev => prev + 50);
+        setScore((prev: number) => prev + 50);
         audioManager.playSound('powerup');
       },
       onLevelComplete: () => {
@@ -65,6 +65,11 @@ export default function Game({
         audioManager.playSound('levelComplete');
       }
     });
+    
+    // Load the current level
+    if (gameEngineRef.current) {
+      gameEngineRef.current.loadLevel(level);
+    }
     
     // Start game loop
     const gameLoop = (currentTime: number) => {
@@ -114,7 +119,7 @@ export default function Game({
       window.removeEventListener('keydown', handleKeyDown);
       audioManager.stopBackgroundMusic();
     };
-  }, [isPaused, lives]);
+  }, [isPaused, lives, level]);
 
   // Handle game over
   useEffect(() => {
