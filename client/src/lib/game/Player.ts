@@ -112,26 +112,57 @@ export class Player {
   }
   
   render(ctx: CanvasRenderingContext2D): void {
-    // Save context state
     ctx.save();
     
-    // Apply blinking effect when invulnerable
     if (this.invulnerable && Math.floor(this.invulnerabilityTimer * 10) % 2 === 0) {
       ctx.globalAlpha = 0.5;
     }
     
-    // Draw character body
-    ctx.fillStyle = this.hasSpeedBoost ? '#7bed9f' : this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    // Base body
+    const gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+    gradient.addColorStop(0, this.hasSpeedBoost ? '#7bed9f' : '#4834d4');
+    gradient.addColorStop(1, this.hasSpeedBoost ? '#2ed573' : '#686de0');
+    ctx.fillStyle = gradient;
     
-    // Draw character face
-    ctx.fillStyle = '#f1f2f6';
+    // Draw rounded rectangle for body
+    const radius = 8;
+    ctx.beginPath();
+    ctx.moveTo(this.x + radius, this.y);
+    ctx.lineTo(this.x + this.width - radius, this.y);
+    ctx.quadraticCurveTo(this.x + this.width, this.y, this.x + this.width, this.y + radius);
+    ctx.lineTo(this.x + this.width, this.y + this.height - radius);
+    ctx.quadraticCurveTo(this.x + this.width, this.y + this.height, this.x + this.width - radius, this.y + this.height);
+    ctx.lineTo(this.x + radius, this.y + this.height);
+    ctx.quadraticCurveTo(this.x, this.y + this.height, this.x, this.y + this.height - radius);
+    ctx.lineTo(this.x, this.y + radius);
+    ctx.quadraticCurveTo(this.x, this.y, this.x + radius, this.y);
+    ctx.closePath();
+    ctx.fill();
     
-    // Eyes
-    const eyeSize = this.width * 0.2;
-    const eyeY = this.y + this.height * 0.2;
-    const leftEyeX = this.x + (this.direction > 0 ? this.width * 0.25 : this.width * 0.55);
-    const rightEyeX = this.x + (this.direction > 0 ? this.width * 0.55 : this.width * 0.25);
+    // Cape effect
+    if (this.state === PlayerState.JUMPING || this.state === PlayerState.FALLING) {
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath();
+      ctx.moveTo(this.x + this.width * 0.5, this.y + this.height * 0.2);
+      ctx.quadraticCurveTo(
+        this.x + this.width * (this.direction > 0 ? -0.2 : 1.2),
+        this.y + this.height * 0.5,
+        this.x + this.width * 0.5,
+        this.y + this.height
+      );
+      ctx.fill();
+    }
+    
+    // Eyes with glow effect
+    const eyeY = this.y + this.height * 0.3;
+    const leftEyeX = this.x + (this.direction > 0 ? this.width * 0.3 : this.width * 0.6);
+    const rightEyeX = this.x + (this.direction > 0 ? this.width * 0.6 : this.width * 0.3);
+    
+    // Glow
+    ctx.shadowColor = '#00cec9';
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = '#81ecec';
+    const eyeSize = this.width * 0.15;
     
     ctx.beginPath();
     ctx.arc(leftEyeX, eyeY, eyeSize, 0, Math.PI * 2);
@@ -141,10 +172,11 @@ export class Player {
     ctx.arc(rightEyeX, eyeY, eyeSize, 0, Math.PI * 2);
     ctx.fill();
     
-    // Mouth
-    const mouthY = this.y + this.height * 0.4;
-    const mouthWidth = this.width * 0.5;
-    const mouthHeight = this.height * 0.1;
+    // Reset shadow
+    ctx.shadowBlur = 0;
+    
+    // Expression
+    const mouthY = this.y + this.height * 0.5;
     
     if (this.state === PlayerState.JUMPING || this.state === PlayerState.FALLING) {
       // Surprised O mouth when jumping/falling

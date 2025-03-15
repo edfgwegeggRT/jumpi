@@ -85,21 +85,49 @@ export class Enemy {
   render(ctx: CanvasRenderingContext2D): void {
     if (this.defeated) return;
     
-    // Save context state
     ctx.save();
     
-    // Draw enemy body
+    // Crystal-like body
+    const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.width, this.y + this.height);
+    gradient.addColorStop(0, '#e056fd');
+    gradient.addColorStop(0.5, '#686de0');
+    gradient.addColorStop(1, '#ff6b81');
+    
+    ctx.fillStyle = gradient;
+    
+    // Crystalline shape
+    ctx.beginPath();
+    ctx.moveTo(this.x + this.width / 2, this.y);
+    ctx.lineTo(this.x + this.width, this.y + this.height * 0.3);
+    ctx.lineTo(this.x + this.width, this.y + this.height * 0.7);
+    ctx.lineTo(this.x + this.width / 2, this.y + this.height);
+    ctx.lineTo(this.x, this.y + this.height * 0.7);
+    ctx.lineTo(this.x, this.y + this.height * 0.3);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Glowing core
+    const coreGradient = ctx.createRadialGradient(
+      this.x + this.width / 2, this.y + this.height / 2, 0,
+      this.x + this.width / 2, this.y + this.height / 2, this.width * 0.3
+    );
+    coreGradient.addColorStop(0, 'rgba(255, 107, 129, 0.8)');
+    coreGradient.addColorStop(1, 'rgba(255, 107, 129, 0)');
+    
+    ctx.fillStyle = coreGradient;
+    ctx.beginPath();
+    ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.width * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Evil eyes with glow
+    ctx.shadowColor = '#ff4757';
+    ctx.shadowBlur = 15;
     ctx.fillStyle = '#ff6b81';
-    ctx.fillRect(this.x, this.y, this.width, this.height);
     
-    // Draw enemy eyes
-    ctx.fillStyle = '#f1f2f6';
-    
-    // Left eye with angry expression
     const eyeSize = this.width * 0.15;
-    const eyeY = this.y + this.height * 0.25;
-    const leftEyeX = this.x + (this.direction > 0 ? this.width * 0.25 : this.width * 0.6);
-    const rightEyeX = this.x + (this.direction > 0 ? this.width * 0.6 : this.width * 0.25);
+    const eyeY = this.y + this.height * 0.4;
+    const leftEyeX = this.x + (this.direction > 0 ? this.width * 0.3 : this.width * 0.7);
+    const rightEyeX = this.x + (this.direction > 0 ? this.width * 0.7 : this.width * 0.3);
     
     ctx.beginPath();
     ctx.arc(leftEyeX, eyeY, eyeSize, 0, Math.PI * 2);
