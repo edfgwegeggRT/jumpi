@@ -1,3 +1,4 @@
+
 export class GameState {
   private score: number = 0;
   private lives: number = 3;
@@ -6,7 +7,7 @@ export class GameState {
   private gameTime: number = 0;
   
   constructor() {
-    // Initialize game state
+    this.loadGameState();
   }
   
   updateScore(points: number): void {
@@ -80,9 +81,5 @@ export class GameState {
       return true;
     }
     return false;
-  }
-
-  constructor() {
-    this.loadGameState();
   }
 }
