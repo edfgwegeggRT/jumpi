@@ -41,7 +41,7 @@ export interface LevelData {
 
 export class Level {
   width: number = 2500; // Increased total level width
-  height: number = 800; // Increased total level height
+  height: number = 600; // Keep the original height
   
   private levels: Record<number, LevelData> = {
     // Level 1: Basic tutorial level
